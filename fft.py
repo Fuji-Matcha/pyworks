@@ -89,16 +89,11 @@ def fft_multi_data(datapath, Fs):
                 ENOB = fft(data, N, Fs)
                 ENOBs.append(ENOB)
 
-            # if r_data[0] == "--------------finished--------------":
-            #     break
-
             #データ終了フラグ
             if r_data[0] == "MEASURE_FINISHED":
                 break
         
-    
-    # print(regs)
-    # print(ENOBs)
+        
     #最大のENOBを探す
     max_ENOB  = max(ENOBs)
     max_reg_param = regs[ENOBs.index(max(ENOBs))]
@@ -110,7 +105,7 @@ def fft_multi_data(datapath, Fs):
     return max_ENOB, max_reg_param
 
 #単一データに対するFFT
-def fft_single_data(datapath, N, Fs):
+def fft_single_data(datapath, Fs):
     
     with open(datapath, mode="r") as f:
 
@@ -120,18 +115,24 @@ def fft_single_data(datapath, N, Fs):
     for i in range(len(r_data)):
 
         #ADCデータに対する処理
-        # if r_data[i][0] == "ADC_DATA": #データ抽出開始のキーワード
-        if r_data[i][0] == "ADDRESS":
-            c += 1
+        if r_data[i][0] == "ADC_DATA": #データ抽出開始のキーワード
 
-        if c== 2:
+            c += 1
+        
+        if c==1 and r_data[i][0] == "Data_Number":
+
+            N = int(r_data[i][1])
+            c += 1
+        
+        if c==2 and r_data[i][0] == "128":
+
             data = []
             for j in range(N): #データ抽出
                 
-                data.append(r_data[i+j+1][2]) 
+                data.append(r_data[i+j][2]) 
 
-            break
-        
+            c = 0
+            break   
     
     ENOB = fft(data, N, Fs)
     print(ENOB)
@@ -140,6 +141,6 @@ def fft_single_data(datapath, N, Fs):
 
 if __name__ == "__main__" :
     
-    fft_multi_data(datapath="./teraterm.csv", Fs=1000000)
+    # fft_multi_data(datapath="./teraterm.csv", Fs=1000000)
 
-    # fft_single_data(datapath="./data_con26.csv", N=4096*4, Fs=1000000)
+    fft_single_data(datapath="./teraterm.log", Fs=1000000)
