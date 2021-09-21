@@ -46,6 +46,10 @@ def fft(data, N, Fs):
 
 def fft_multi_data(datapath, Fs):
 
+    #add
+    func_cnt = 0
+    FUNC_NAME = ["ADCParameterSet1","ADCParameter_S10","ADCParameter_S9","ADCParameter_S8","ADCParameter_SX","AllParameter_examined"]
+
     regs = []
     ENOBs = []
     c = 0
@@ -88,21 +92,44 @@ def fft_multi_data(datapath, Fs):
                 
                 ENOB = fft(data, N, Fs)
                 ENOBs.append(ENOB)
+            
+            #add
+            #各ADCParameter終了時
+            if r_data[0] == FUNC_NAME[func_cnt+1]:
+                #最大のENOBを探す
+                max_ENOB  = max(ENOBs)
+                max_reg_param = regs[ENOBs.index(max(ENOBs))]
+
+                print("{}".format(FUNC_NAME[func_cnt]))
+                print(max_ENOB)
+                print(max_reg_param)
+                print("tried parameter number: {}".format(c))
+                print("")                       
+
+                func_cnt += 1
+                c = 0
+                del ENOBs
+                del regs
+                ENOBs = []
+                regs  = []
+            
 
             #データ終了フラグ
-            if r_data[0] == "MEASURE_FINISHED":
+            if r_data[0] == "AllParameter_examined":
                 break
+            # if r_data[0] == "MEASURE_FINISHED":
+            #     break
         
         
     #最大のENOBを探す
-    max_ENOB  = max(ENOBs)
-    max_reg_param = regs[ENOBs.index(max(ENOBs))]
+    # max_ENOB  = max(ENOBs)
+    # max_reg_param = regs[ENOBs.index(max(ENOBs))]
 
-    print(max_ENOB)
-    print(max_reg_param)
-    print("tried parameter number: {}".format(c))
+    # print(max_ENOB)
+    # print(max_reg_param)
+    # print("tried parameter number: {}".format(c))
 
-    return max_ENOB, max_reg_param
+    # return max_ENOB, max_reg_param
 
 #単一データに対するFFT
 def fft_single_data(datapath, Fs):
@@ -141,6 +168,6 @@ def fft_single_data(datapath, Fs):
 
 if __name__ == "__main__" :
     
-    # fft_multi_data(datapath="./teraterm.csv", Fs=1000000)
+    fft_multi_data(datapath="/mnt/c/Users/00002/Desktop/consecutive_measure.log", Fs=1000000)
 
-    fft_single_data(datapath="./teraterm.log", Fs=1000000)
+    # fft_single_data(datapath="/mnt/c/Users/00002/Desktop/teraterm.log", Fs=1000000)
