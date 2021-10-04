@@ -93,43 +93,48 @@ def fft_multi_data(datapath, Fs):
                 ENOB = fft(data, N, Fs)
                 ENOBs.append(ENOB)
             
-            #add
-            #各ADCParameter終了時
-            if r_data[0] == FUNC_NAME[func_cnt+1]:
-                #最大のENOBを探す
-                max_ENOB  = max(ENOBs)
-                max_reg_param = regs[ENOBs.index(max(ENOBs))]
+            # consective mode
+            # 各ADCParameter終了時
+            # if r_data[0] == FUNC_NAME[func_cnt+1]:
+            #     #最大のENOBを探す
+            #     max_ENOB  = max(ENOBs)
+            #     max_reg_param = regs[ENOBs.index(max(ENOBs))]
 
-                print("{}".format(FUNC_NAME[func_cnt]))
-                print(max_ENOB)
-                print(max_reg_param)
-                print("tried parameter number: {}".format(c))
-                print("")                       
+            #     print("{}".format(FUNC_NAME[func_cnt]))
+            #     print(max_ENOB)
+            #     print(max_reg_param)
+            #     print("tried parameter number: {}".format(c))
+            #     print("")                       
 
-                func_cnt += 1
-                c = 0
-                del ENOBs
-                del regs
-                ENOBs = []
-                regs  = []
+            #     func_cnt += 1
+            #     c = 0
+            #     del ENOBs
+            #     del regs
+            #     ENOBs = []
+            #     regs  = []
             
 
             #データ終了フラグ
-            if r_data[0] == "AllParameter_examined":
+            # default mode
+            if r_data[0] == "MEASURE_FINISHED":
                 break
-            # if r_data[0] == "MEASURE_FINISHED":
+
+            # consective mode
+            # if r_data[0] == "AllParameter_examined":
             #     break
+
         
         
-    #最大のENOBを探す
-    # max_ENOB  = max(ENOBs)
-    # max_reg_param = regs[ENOBs.index(max(ENOBs))]
+    # 最大のENOBを探す
+    # default mode
+    max_ENOB  = max(ENOBs)
+    max_reg_param = regs[ENOBs.index(max(ENOBs))]
 
-    # print(max_ENOB)
-    # print(max_reg_param)
-    # print("tried parameter number: {}".format(c))
+    print(max_ENOB)
+    print(max_reg_param)
+    print("tried parameter number: {}".format(c))
 
-    # return max_ENOB, max_reg_param
+    return max_ENOB, max_reg_param
 
 #単一データに対するFFT
 def fft_single_data(datapath, Fs):
@@ -168,6 +173,6 @@ def fft_single_data(datapath, Fs):
 
 if __name__ == "__main__" :
     
-    fft_multi_data(datapath="/mnt/c/Users/00002/Desktop/consecutive_measure.log", Fs=1000000)
+    fft_multi_data(datapath="/mnt/c/Users/00002/Desktop/rdparam_s9s8s10.log", Fs=1000000)
 
     # fft_single_data(datapath="/mnt/c/Users/00002/Desktop/teraterm.log", Fs=1000000)

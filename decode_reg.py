@@ -3,7 +3,7 @@
 
 def main():
 
-    with open("/mnt/c/Users/00002/Desktop/teraterm_send_data.txt", mode='r') as f:
+    with open("/mnt/c/Users/00002/Desktop/s9s8s10.txt", mode='r') as f:
 
         regs = []
         for num in f.readlines():
